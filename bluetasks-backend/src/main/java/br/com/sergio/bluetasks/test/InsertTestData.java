@@ -5,12 +5,14 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import br.com.sergio.bluetasks.domain.task.Task;
+import br.com.sergio.bluetasks.domain.task.TaskRepository;
 import br.com.sergio.bluetasks.domain.user.AppUser;
-import br.com.sergio.bluetasks.repository.AppUserRepository;
-import br.com.sergio.bluetasks.repository.TaskRepository;
+import br.com.sergio.bluetasks.domain.user.AppUserRepository;
 
 @Component
 public class InsertTestData {
@@ -27,8 +29,8 @@ public class InsertTestData {
 	@EventListener
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		
-		//TODO: Criptografar senha
-		AppUser appUser = new AppUser("Sergio", "abc", "Sergio Garcia");
+		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		AppUser appUser = new AppUser("Sergio", encoder.encode("abc"), "Sergio Garcia");
 		appUserRepository.save(appUser);
 		
 		LocalDate baseDate = LocalDate.parse("2025-02-01");
